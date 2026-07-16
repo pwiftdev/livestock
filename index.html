@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LIVESTOCK 🐄 — Genuinely Tokenized</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Bungee&family=Fredoka:wght@400;500;600;700&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sky-dawn-top:#FBD3A0; --sky-dawn-bot:#F79C6E;
+    --sky-day-top:#4FB4EC;  --sky-day-bot:#A9E4FF;
+    --sun:#FFC42E; --sun-deep:#F59E0B; --sun-face:#B8620A;
+    --grass:#84C63C; --grass-dk:#5FA02C; --hillback:#A2D65A;
+    --barn:#C63A2B; --barn-dk:#9B291D; --roof:#7C1F14;
+    --wood:#B0783E; --wood-dk:#7E5228;
+    --fence:#FFF7E6; --cream:#FFF7E6; --dirt:#C08A47;
+    --tree:#3E8E2F; --tree-dk:#2E6B22; --trunk:#7E5228;
+    --wheat:#E8C34A; --bird:#41372E; --pond:#7FD3E8;
+    --ink:#3A2410; --ink-soft:#6B5334;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:"Fredoka",system-ui,sans-serif;color:var(--ink);background:var(--sky-day-top);overflow-x:hidden;}
+
+  /* ================= FIXED FARM SCENE ================= */
+  .scene{position:fixed;inset:0;z-index:0;overflow:hidden;}
+  .sky{position:absolute;inset:0;background:linear-gradient(180deg,var(--sky-dawn-top),var(--sky-dawn-bot));}
+  .sky-day{position:absolute;inset:0;opacity:0;background:linear-gradient(180deg,var(--sky-day-top),var(--sky-day-bot));}
+
+  /* ---- sun (centered ray ring) ---- */
+  .sun-wrap{position:absolute;top:78%;left:26%;width:160px;height:160px;transform:translate(-50%,-50%);will-change:top,left;}
+  .sun-core{position:absolute;inset:20px;border-radius:50%;
+    background:radial-gradient(circle at 40% 35%,#FFE07A,var(--sun) 55%,var(--sun-deep));
+    box-shadow:0 0 55px rgba(255,196,46,.8);}
+  .sun-rays{position:absolute;inset:0;animation:spin 24s linear infinite;}
+  .sun-rays span{position:absolute;left:50%;top:50%;width:12px;height:30px;background:var(--sun);
+    border-radius:8px;transform-origin:center center;}
+  .sun-face{position:absolute;inset:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;}
+  .sun-eyes{display:flex;gap:26px;}
+  .sun-eyes i{width:11px;height:14px;background:var(--sun-face);border-radius:50%;display:block;animation:blink 5s infinite;}
+  .sun-smile{width:42px;height:20px;border:5px solid var(--sun-face);border-top:none;border-radius:0 0 42px 42px;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  @keyframes blink{0%,93%,100%{transform:scaleY(1);}96%{transform:scaleY(.1);}}
+
+  /* ---- clouds ---- */
+  .clouds{position:absolute;inset:0;}
+  .cloud{position:absolute;background:#fff;border-radius:100px;width:150px;height:46px;opacity:.95;}
+  .cloud::before,.cloud::after{content:"";position:absolute;background:#fff;border-radius:50%;}
+  .cloud::before{width:70px;height:70px;top:-30px;left:22px;}
+  .cloud::after{width:52px;height:52px;top:-20px;left:80px;}
+  .c1{top:15%;animation:drift 52s linear infinite;transform:scale(1.2);}
+  .c2{top:29%;animation:drift 72s linear infinite;transform:scale(.85);}
+  .c3{top:8%;animation:drift 96s linear infinite;transform:scale(1.5);opacity:.8;}
+  .c4{top:22%;animation:drift 64s linear infinite;transform:scale(1);opacity:.9;}
+  @keyframes drift{from{left:-25%;}to{left:130%;}}
+  .c2{animation-delay:-30s;}.c3{animation-delay:-55s;}.c4{animation-delay:-18s;}
+
+  /* ---- birds ---- */
+  .bird{position:absolute;color:var(--bird);}
+  .bird svg{display:block;animation:flap .45s ease-in-out infinite;transform-origin:center;}
+  @keyframes flap{0%,100%{transform:scaleY(1);}50%{transform:scaleY(.45);}}
+  .flock{position:absolute;top:20%;animation:cross 34s linear infinite;}
+  .flock .bird{position:absolute;}
+  .flock .bird:nth-child(1){left:0;top:0;}
+  .flock .bird:nth-child(2){left:26px;top:14px;}
+  .flock .bird:nth-child(2) svg{animation-delay:.12s;}
+  .flock .bird:nth-child(3){left:52px;top:0;}
+  .flock .bird:nth-child(3) svg{animation-delay:.24s;}
+  .bird-solo{top:12%;animation:cross 46s linear infinite;animation-delay:-20s;transform:scale(.8);}
+  @keyframes cross{from{left:-10%;}to{left:112%;}}
+
+  /* ---- hot air balloon ---- */
+  .balloon{position:absolute;top:10%;width:74px;animation:sail 80s linear infinite,bobb 5s ease-in-out infinite;}
+  @keyframes sail{from{left:-12%;}to{left:120%;}}
+  @keyframes bobb{0%,100%{transform:translateY(0);}50%{transform:translateY(-14px);}}
+
+  /* ---- leaves (JS-injected) ---- */
+  .leaves{position:absolute;inset:0;pointer-events:none;}
+  .leaf{position:absolute;left:-60px;will-change:transform;}
+
+  /* ================= LAND ================= */
+  .land{position:absolute;left:0;bottom:0;width:100%;height:66vh;transform:translateY(118%);will-change:transform;}
+  .hills{position:absolute;bottom:0;width:100%;height:100%;}
+  .hill-b{fill:var(--hillback);}
+  .hill-f{fill:var(--grass);}
+  .ground{position:absolute;left:0;bottom:0;width:100%;height:32%;background:var(--grass-dk);}
+
+  /* windmill */
+  .windmill{position:absolute;bottom:34%;left:26%;width:96px;height:150px;}
+  @media(max-width:640px){.windmill{width:60px;height:94px;bottom:36%;left:30%;}}
+  .blades{transform-box:fill-box;transform-origin:center center;animation:spin 7s linear infinite;}
+
+  /* trees */
+  .tree{position:absolute;font-size:60px;transform-origin:bottom center;animation:sway 4s ease-in-out infinite;filter:drop-shadow(0 5px 0 rgba(0,0,0,.08));}
+  @media(max-width:640px){.tree{font-size:38px;}}
+  .t1{bottom:38%;left:2%;}
+  .t2{bottom:42%;left:70%;animation-delay:.6s;font-size:50px;}
+  .t3{bottom:36%;left:92%;animation-delay:1.1s;font-size:44px;}
+  @keyframes sway{0%,100%{transform:rotate(-3deg);}50%{transform:rotate(3deg);}}
+
+  /* barn */
+  .barn{position:absolute;bottom:30%;left:10%;width:180px;height:142px;}
+  @media(max-width:640px){.barn{width:114px;height:90px;left:5%;bottom:32%;}}
+
+  /* pond + duck */
+  .pond{position:absolute;bottom:15%;left:60%;width:150px;height:40px;background:radial-gradient(ellipse at center,#B9ECF7,var(--pond));border-radius:50%;box-shadow:inset 0 4px 8px rgba(0,0,0,.08);}
+  @media(max-width:640px){.pond{width:96px;height:26px;left:58%;}}
+  .duck{position:absolute;bottom:17%;left:64%;font-size:32px;animation:floaty 3s ease-in-out infinite;}
+
+  /* fence */
+  .fence{position:absolute;bottom:26%;left:0;width:100%;height:64px;}
+
+  /* animals */
+  .critter{position:absolute;will-change:transform;}
+  .critter b{display:inline-block;font-size:60px;line-height:1;filter:drop-shadow(0 6px 0 rgba(0,0,0,.12));font-weight:normal;}
+  @media(max-width:640px){.critter b{font-size:38px;}}
+  .hop{animation:hop 1.7s ease-in-out infinite;}
+  .wob{animation:wobble 2.3s ease-in-out infinite;}
+  @keyframes hop{0%,100%{transform:translateY(0) rotate(-2deg);}50%{transform:translateY(-15px) rotate(2deg);}}
+  @keyframes wobble{0%,100%{transform:rotate(-6deg);}50%{transform:rotate(6deg);}}
+  @keyframes floaty{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+  .a1{bottom:24%;left:34%;}.a2{bottom:20%;left:48%;}.a3{bottom:26%;left:74%;}
+  .a4{bottom:19%;left:83%;}.a5{bottom:23%;left:90%;}.a6{bottom:18%;left:22%;}
+  .a7{bottom:21%;left:41%;}.a8{bottom:25%;left:56%;}
+
+  .tractor{position:absolute;bottom:20%;font-size:66px;animation:drive 24s linear infinite;white-space:nowrap;}
+  @media(max-width:640px){.tractor{font-size:42px;}}
+  .tractor .dust{font-size:40px;opacity:.6;margin-right:-6px;vertical-align:middle;}
+  @keyframes drive{from{left:-12%;}to{left:118%;}}
+
+  /* wheat + flowers + bugs */
+  .flora{position:absolute;bottom:26%;left:0;width:100%;height:60px;}
+  .stalk{position:absolute;bottom:0;font-size:34px;transform-origin:bottom center;animation:sway 3.2s ease-in-out infinite;}
+  @media(max-width:640px){.stalk{font-size:22px;}}
+  .butterfly{position:absolute;font-size:26px;animation:flutter 9s ease-in-out infinite;}
+  @keyframes flutter{0%{transform:translate(0,0) rotate(-8deg);}25%{transform:translate(34px,-30px) rotate(8deg);}
+    50%{transform:translate(66px,4px) rotate(-6deg);}75%{transform:translate(30px,-22px) rotate(8deg);}100%{transform:translate(0,0) rotate(-8deg);}}
+  .bee{position:absolute;font-size:20px;animation:buzz 2.6s ease-in-out infinite;}
+  @keyframes buzz{0%,100%{transform:translate(0,0);}25%{transform:translate(-11px,-9px);}50%{transform:translate(9px,-4px);}75%{transform:translate(-6px,-11px);}}
+
+  /* foreground swaying grass */
+  .fg-grass{position:absolute;bottom:0;left:0;width:100%;height:16%;}
+  .fg-grass .blades{transform-box:fill-box;transform-origin:bottom center;animation:grasssway 5s ease-in-out infinite;}
+  @keyframes grasssway{0%,100%{transform:skewX(-2deg);}50%{transform:skewX(2deg);}}
+
+  /* speech bubbles */
+  .bubble{position:absolute;background:#fff;border:3px solid var(--ink);border-radius:22px;padding:4px 12px;
+    font-family:"Bungee",cursive;font-size:14px;color:var(--ink);white-space:nowrap;animation:pop 2.4s ease-in-out infinite;}
+  .bubble::after{content:"";position:absolute;bottom:-10px;left:20px;width:0;height:0;border:8px solid transparent;border-top-color:var(--ink);}
+  .b1{bottom:41%;left:33%;}.b2{bottom:34%;left:60%;animation-delay:.6s;}.b3{bottom:38%;left:86%;animation-delay:1.1s;}
+  @keyframes pop{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-8px) scale(1.06);}}
+
+  /* ================= CONTENT ================= */
+  .content{position:relative;z-index:2;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 26px;}
+  .act{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;}
+  .act-sky{min-height:200vh;align-items:flex-start;padding-top:14vh;}
+  .act-land{min-height:150vh;}
+
+  .toon{font-family:"Luckiest Guy",cursive;color:#fff;line-height:.92;
+    text-shadow:5px 5px 0 var(--ink),-2px -2px 0 var(--ink),2px -2px 0 var(--ink),-2px 2px 0 var(--ink);}
+  .hero h1{font-size:clamp(64px,17vw,220px);}
+  .hero h1 .l{display:inline-block;color:var(--barn);}
+  .hero h1 .l:nth-child(even){color:var(--sun);transform:rotate(4deg);}
+  .hero h1 .l:nth-child(odd){transform:rotate(-3deg);}
+  .hero .tag{font-family:"Bungee",cursive;color:#fff;background:var(--barn);display:inline-block;padding:10px 20px;
+    border-radius:14px;margin-top:26px;font-size:clamp(15px,2.4vw,24px);border:3px solid var(--ink);transform:rotate(-1.5deg);box-shadow:5px 5px 0 var(--ink);}
+  .hero .sub{font-size:clamp(18px,2.6vw,26px);font-weight:600;color:#fff;text-shadow:2px 2px 0 var(--ink);margin-top:22px;max-width:22ch;margin-inline:auto;}
+  .scrollcue{margin-top:44px;font-family:"Bungee",cursive;color:#fff;text-shadow:2px 2px 0 var(--ink);font-size:15px;animation:bobcue 1.4s ease-in-out infinite;}
+  @keyframes bobcue{0%,100%{transform:translateY(0);}50%{transform:translateY(10px);}}
+  .midline{font-family:"Luckiest Guy",cursive;color:#fff;font-size:clamp(30px,6vw,68px);text-shadow:4px 4px 0 var(--ink);transform:rotate(-2deg);}
+
+  .land-punch h2{font-size:clamp(44px,11vw,140px);}
+  .land-punch .p{font-family:"Bungee",cursive;font-size:clamp(16px,2.6vw,26px);color:var(--ink);background:var(--sun);
+    display:inline-block;padding:10px 22px;border-radius:14px;border:3px solid var(--ink);box-shadow:5px 5px 0 var(--ink);margin-top:24px;transform:rotate(1deg);}
+
+  .slab{position:relative;z-index:2;padding:96px 0;border-top:8px dashed var(--ink);}
+  .slab.cream{background:var(--cream);}.slab.red{background:var(--barn);color:var(--cream);}
+  .slab.green{background:var(--grass);}.slab.sun{background:var(--sun);}.slab.wood{background:var(--wood);color:var(--cream);}
+  .kicker{font-family:"Bungee",cursive;font-size:14px;display:inline-block;background:var(--ink);color:var(--cream);padding:7px 16px;border-radius:10px;transform:rotate(-1.5deg);margin-bottom:22px;}
+  .slab.red .kicker,.slab.wood .kicker{background:var(--cream);color:var(--ink);}
+  .h2big{font-family:"Luckiest Guy",cursive;font-size:clamp(34px,6.5vw,76px);line-height:.95;}
+  .slab.cream .h2big{color:var(--barn);}.slab.green .h2big{color:var(--ink);}.slab.sun .h2big{color:var(--barn);}
+
+  .hay-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;margin-top:44px;}
+  .hay{background:#fff;border:4px solid var(--ink);border-radius:18px;padding:24px;box-shadow:8px 8px 0 var(--ink);transform:rotate(-1deg);transition:transform .15s;}
+  .hay:nth-child(even){transform:rotate(1.2deg);}
+  .hay:hover{transform:rotate(0) translateY(-4px);}
+  .hay .w{font-family:"Luckiest Guy",cursive;font-size:30px;color:var(--barn);}
+  .hay .r{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:13px;color:var(--wood-dk);margin:8px 0 12px;}
+  .hay .g{font-size:15px;color:var(--ink-soft);line-height:1.5;font-weight:500;}
+  .lexfoot{font-family:"Luckiest Guy",cursive;font-size:clamp(22px,4vw,42px);color:var(--ink);margin-top:44px;transform:rotate(-1deg);}
+
+  .herd-wrap{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;margin-top:40px;}
+  @media(max-width:760px){.herd-wrap{grid-template-columns:1fr;}}
+  .counter{font-family:"Luckiest Guy",cursive;font-size:clamp(70px,14vw,150px);color:var(--sun);line-height:.85;text-shadow:4px 4px 0 var(--roof);}
+  .counter + .cc{font-family:"Bungee",cursive;font-size:15px;margin-top:12px;}
+  .herd-note{margin-top:18px;font-weight:600;font-size:16px;max-width:40ch;opacity:.95;}
+  .ledger{background:var(--cream);color:var(--ink);border:4px solid var(--ink);border-radius:16px;overflow:hidden;box-shadow:8px 8px 0 var(--roof);font-family:"JetBrains Mono",monospace;font-size:12.5px;}
+  .ledger .lh{display:flex;justify-content:space-between;padding:12px 16px;background:var(--ink);color:var(--cream);}
+  .lrow{display:grid;grid-template-columns:auto 1fr auto;gap:12px;padding:11px 16px;border-bottom:2px dashed var(--dirt);align-items:center;}
+  .lrow:last-child{border-bottom:none;}
+  .lrow .st{text-align:right;color:var(--grass-dk);}
+  .lrow .gr{color:var(--sun-deep);}
+
+  .mech{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:44px;}
+  @media(max-width:760px){.mech{grid-template-columns:1fr;}}
+  .mcard{background:#fff;border:4px solid var(--ink);border-radius:20px;padding:28px;box-shadow:8px 8px 0 var(--grass-dk);}
+  .mcard .em{font-size:52px;}
+  .mcard h3{font-family:"Luckiest Guy",cursive;font-size:24px;color:var(--barn);margin:10px 0 8px;}
+  .mcard p{font-weight:500;font-size:15px;color:var(--ink-soft);}
+  .creed{font-family:"Luckiest Guy",cursive;font-size:clamp(34px,8vw,90px);color:var(--ink);text-align:center;margin-top:60px;line-height:.95;}
+  .creed span{color:var(--barn);}
+
+  .ca{max-width:760px;margin:44px auto 0;background:var(--cream);border:5px solid var(--ink);border-radius:20px;padding:26px;box-shadow:10px 10px 0 var(--roof);}
+  .ca .lab{font-family:"Bungee",cursive;font-size:13px;color:var(--barn);margin-bottom:10px;}
+  .ca .addr{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:15px;word-break:break-all;color:var(--ink);}
+  .ca button{margin-top:18px;font-family:"Bungee",cursive;font-size:15px;background:var(--barn);color:#fff;border:4px solid var(--ink);border-radius:12px;padding:14px 26px;cursor:pointer;box-shadow:5px 5px 0 var(--ink);transition:transform .12s;}
+  .ca button:hover{transform:translate(2px,2px);box-shadow:3px 3px 0 var(--ink);}
+  .ca button:focus-visible{outline:3px solid var(--ink);outline-offset:3px;}
+
+  .disc{font-family:"JetBrains Mono",monospace;font-size:12px;line-height:1.9;max-width:74ch;margin:0 auto;text-align:center;font-weight:700;}
+  .footbig{font-family:"Luckiest Guy",cursive;font-size:clamp(48px,15vw,150px);text-align:center;margin-top:40px;line-height:.85;color:var(--cream);text-shadow:5px 5px 0 var(--roof);}
+  .footbig span{color:var(--sun);}
+  .footsub{text-align:center;font-family:"Bungee",cursive;font-size:14px;margin-top:14px;}
+
+  body.static .land{transform:none;}
+  body.static .sun-wrap{top:12%;left:56%;}
+  body.static .sky-day{opacity:1;}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;}html{scroll-behavior:auto;}}
+</style>
+</head>
+<body>
+
+<!-- ===== FIXED FARM SCENE ===== -->
+<div class="scene" aria-hidden="true">
+  <div class="sky"></div>
+  <div class="sky-day"></div>
+
+  <!-- sun -->
+  <div class="sun-wrap">
+    <div class="sun-rays" id="rays"></div>
+    <div class="sun-core"></div>
+    <div class="sun-face"><div class="sun-eyes"><i></i><i></i></div><div class="sun-smile"></div></div>
+  </div>
+
+  <!-- clouds -->
+  <div class="clouds">
+    <div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div><div class="cloud c4"></div>
+  </div>
+
+  <!-- birds -->
+  <div class="sky-extras">
+    <div class="flock">
+      <div class="bird"><svg width="30" height="14" viewBox="0 0 30 14"><path d="M1 12 Q8 1 15 10 Q22 1 29 12" fill="none" stroke="var(--bird)" stroke-width="2.6" stroke-linecap="round"/></svg></div>
+      <div class="bird"><svg width="26" height="12" viewBox="0 0 30 14"><path d="M1 12 Q8 1 15 10 Q22 1 29 12" fill="none" stroke="var(--bird)" stroke-width="2.6" stroke-linecap="round"/></svg></div>
+      <div class="bird"><svg width="30" height="14" viewBox="0 0 30 14"><path d="M1 12 Q8 1 15 10 Q22 1 29 12" fill="none" stroke="var(--bird)" stroke-width="2.6" stroke-linecap="round"/></svg></div>
+    </div>
+    <div class="bird bird-solo"><svg width="26" height="12" viewBox="0 0 30 14"><path d="M1 12 Q8 1 15 10 Q22 1 29 12" fill="none" stroke="var(--bird)" stroke-width="2.6" stroke-linecap="round"/></svg></div>
+
+    <!-- hot air balloon -->
+    <div class="balloon">
+      <svg viewBox="0 0 74 96" width="74">
+        <path d="M37 4 C10 4 6 34 20 58 L54 58 C68 34 64 4 37 4 Z" fill="var(--barn)"/>
+        <path d="M37 4 C30 4 26 30 30 58 L44 58 C48 30 44 4 37 4 Z" fill="var(--sun)"/>
+        <path d="M20 58 L54 58 L46 66 L28 66 Z" fill="var(--roof)"/>
+        <line x1="30" y1="66" x2="33" y2="82" stroke="var(--ink)" stroke-width="1.5"/>
+        <line x1="44" y1="66" x2="41" y2="82" stroke="var(--ink)" stroke-width="1.5"/>
+        <rect x="31" y="82" width="12" height="9" rx="2" fill="var(--wood-dk)"/>
+        <text x="37" y="40" font-family="Bungee" font-size="16" fill="#fff" text-anchor="middle">$</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- swirling leaves injected here -->
+  <div class="leaves" id="leaves"></div>
+
+  <!-- land -->
+  <div class="land">
+    <svg class="hills" viewBox="0 0 1440 600" preserveAspectRatio="none">
+      <path class="hill-b" d="M0 260 Q360 140 720 240 T1440 220 L1440 600 L0 600 Z"/>
+      <path class="hill-f" d="M0 360 Q300 260 620 340 T1180 330 T1440 360 L1440 600 L0 600 Z"/>
+    </svg>
+    <div class="ground"></div>
+
+    <!-- windmill -->
+    <svg class="windmill" viewBox="0 0 96 150">
+      <polygon points="34,58 62,58 72,150 24,150" fill="var(--wood)"/>
+      <polygon points="34,58 62,58 60,42 36,42" fill="var(--roof)"/>
+      <g class="blades">
+        <rect x="45" y="14" width="6" height="34" rx="2" fill="var(--cream)" stroke="var(--wood-dk)"/>
+        <rect x="45" y="48" width="6" height="34" rx="2" fill="var(--cream)" stroke="var(--wood-dk)"/>
+        <rect x="31" y="45" width="34" height="6" rx="2" fill="var(--cream)" stroke="var(--wood-dk)"/>
+      </g>
+      <circle cx="48" cy="48" r="5" fill="var(--roof)"/>
+    </svg>
+
+    <!-- trees -->
+    <div class="tree t1">🌳</div><div class="tree t2">🌳</div><div class="tree t3">🌲</div>
+
+    <!-- barn -->
+    <svg class="barn" viewBox="0 0 180 142">
+      <rect x="18" y="56" width="144" height="86" fill="var(--barn)"/>
+      <path d="M8 58 L90 8 L172 58 Z" fill="var(--roof)"/>
+      <rect x="74" y="90" width="32" height="52" fill="var(--barn-dk)"/>
+      <rect x="72" y="88" width="36" height="4" fill="var(--fence)"/>
+      <line x1="74" y1="90" x2="106" y2="142" stroke="var(--fence)" stroke-width="4"/>
+      <line x1="106" y1="90" x2="74" y2="142" stroke="var(--fence)" stroke-width="4"/>
+      <rect x="32" y="74" width="24" height="24" fill="var(--fence)"/>
+      <rect x="124" y="74" width="24" height="24" fill="var(--fence)"/>
+    </svg>
+
+    <!-- pond + duck -->
+    <div class="pond"></div>
+    <div class="duck">🦆</div>
+
+    <!-- fence -->
+    <svg class="fence" viewBox="0 0 1440 64" preserveAspectRatio="none">
+      <rect x="0" y="24" width="1440" height="8" fill="var(--fence)"/>
+      <rect x="0" y="42" width="1440" height="8" fill="var(--fence)"/>
+      <g fill="var(--fence)">
+        <rect x="40" y="8" width="12" height="56"/><rect x="200" y="8" width="12" height="56"/><rect x="360" y="8" width="12" height="56"/>
+        <rect x="520" y="8" width="12" height="56"/><rect x="680" y="8" width="12" height="56"/><rect x="840" y="8" width="12" height="56"/>
+        <rect x="1000" y="8" width="12" height="56"/><rect x="1160" y="8" width="12" height="56"/><rect x="1320" y="8" width="12" height="56"/>
+      </g>
+    </svg>
+
+    <!-- animals -->
+    <div class="critter a1"><b class="hop">🐄</b></div>
+    <div class="critter a2"><b class="hop">🐖</b></div>
+    <div class="critter a3"><b class="wob">🐑</b></div>
+    <div class="critter a4"><b class="hop">🐔</b></div>
+    <div class="critter a5"><b class="wob">🐓</b></div>
+    <div class="critter a6"><b class="hop">🐐</b></div>
+    <div class="critter a7"><b class="wob">🐴</b></div>
+    <div class="critter a8"><b class="hop">🐕</b></div>
+    <div class="tractor"><span class="dust">💨</span>🚜</div>
+
+    <!-- flora + bugs -->
+    <div class="flora">
+      <div class="stalk" style="left:15%">🌾</div><div class="stalk" style="left:19%;animation-delay:.3s">🌾</div>
+      <div class="stalk" style="left:46%;animation-delay:.5s">🌻</div><div class="stalk" style="left:63%;animation-delay:.2s">🌾</div>
+      <div class="stalk" style="left:67%;animation-delay:.6s">🌷</div><div class="stalk" style="left:95%;animation-delay:.4s">🌾</div>
+      <div class="bee" style="left:47%;bottom:34px">🐝</div>
+      <div class="butterfly" style="left:28%;bottom:30px">🦋</div>
+      <div class="butterfly" style="left:78%;bottom:44px;animation-delay:2s">🦋</div>
+    </div>
+
+    <!-- foreground grass -->
+    <svg class="fg-grass" viewBox="0 0 1440 120" preserveAspectRatio="none">
+      <g class="blades" fill="var(--grass-dk)">
+        <path d="M0 120 L0 60 Q20 20 40 60 L40 120 Z"/>
+        <path d="M60 120 L60 40 Q84 0 108 40 L108 120 Z"/>
+        <path d="M130 120 L130 66 Q150 26 170 66 L170 120 Z"/>
+        <path d="M1290 120 L1290 44 Q1314 4 1338 44 L1338 120 Z"/>
+        <path d="M1360 120 L1360 62 Q1380 22 1400 62 L1400 120 Z"/>
+        <rect x="0" y="90" width="1440" height="30"/>
+      </g>
+    </svg>
+
+    <!-- speech bubbles -->
+    <div class="bubble b1">MOO</div><div class="bubble b2">OINK</div><div class="bubble b3">BAAA</div>
+  </div>
+</div>
+
+<!-- ===== CONTENT ===== -->
+<div class="content">
+  <section class="act act-sky">
+    <div class="wrap hero">
+      <h1 class="toon" aria-label="LIVESTOCK">
+        <span class="l">L</span><span class="l">I</span><span class="l">V</span><span class="l">E</span><span class="l">S</span><span class="l">T</span><span class="l">O</span><span class="l">C</span><span class="l">K</span>
+      </h1>
+      <div class="tag">🐄 GENUINELY TOKENIZED 🐖</div>
+      <p class="sub">the world's first real world asset with a heartbeat and a tail.</p>
+      <div class="scrollcue">▼ SCROLL TO RAISE THE SUN ▼</div>
+      <div style="height:60vh"></div>
+      <div class="midline">crank it up… ☀️</div>
+    </div>
+  </section>
+
+  <section class="act act-land">
+    <div class="wrap land-punch">
+      <h2 class="toon">WELCOME<br>TO THE FARM</h2>
+      <div class="p">every other RWA is basically a knockoff cow 🐄</div>
+    </div>
+  </section>
+
+  <section class="slab cream">
+    <div class="wrap">
+      <span class="kicker">01 · PROVENANCE</span>
+      <h2 class="h2big">the words are<br>literally cows.</h2>
+      <div class="hay-grid">
+        <div class="hay"><div class="w">capital</div><div class="r">← caput (L.) "head"</div><div class="g">as in a head of cattle. wealth was counted by the cow before the coin.</div></div>
+        <div class="hay"><div class="w">pecuniary</div><div class="r">← pecus (L.) "cattle"</div><div class="g">money — pecunia — is named after the herd. it's cows all the way down.</div></div>
+        <div class="hay"><div class="w">fee</div><div class="r">← feoh (OE) "cattle+money"</div><div class="g">one old english word meant both. they didn't bother separating. neither do we.</div></div>
+        <div class="hay"><div class="w">stock</div><div class="r">← livestock</div><div class="g">you don't hold stocks. you hold stock. the exchange just forgot where it came from.</div></div>
+      </div>
+      <div class="lexfoot">so, respectfully: every other RWA is a derivative. 🐮</div>
+    </div>
+  </section>
+
+  <section class="slab red">
+    <div class="wrap">
+      <span class="kicker">02 · PROOF OF HERD™</span>
+      <h2 class="h2big" style="color:var(--cream)">1 token =<br>1 real cow*</h2>
+      <div class="herd-wrap">
+        <div>
+          <div class="counter" id="hc">0</div>
+          <div class="cc">head attested · ledger live · barn open</div>
+          <p class="herd-note">every token is backed by a genuine, tagged, four-legged asset. custody model: extensive. audit frequency: as the grass grows. *cow may be conceptual.</p>
+        </div>
+        <div class="ledger" aria-label="proof of herd ledger">
+          <div class="lh"><span>HEAD ID</span><span>WHEREABOUTS</span><span>STATUS</span></div>
+          <div class="lrow"><span>HD-0001</span><span>pasture 7</span><span class="st">ATTESTED</span></div>
+          <div class="lrow"><span>HD-0002</span><span>pasture 3</span><span class="st">ATTESTED</span></div>
+          <div class="lrow"><span>HD-0003</span><span>in transit</span><span class="st">ATTESTED</span></div>
+          <div class="lrow"><span>HD-0004</span><span>by the barn</span><span class="st">ATTESTED</span></div>
+          <div class="lrow"><span>HD-0005</span><span>escaped, again</span><span class="st gr">GRAZING</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slab green">
+    <div class="wrap">
+      <span class="kicker">03 · MECHANICS</span>
+      <h2 class="h2big">the herd<br>feeds the herd.</h2>
+      <div class="mech">
+        <div class="mcard"><div class="em">🌾</div><h3>grazing rights</h3><p>a slice of every trade goes back to holders, by the head. the pasture is common, the yield is not.</p></div>
+        <div class="mcard"><div class="em">🐮</div><h3>fixed at birth</h3><p>denominated in head from genesis. no dilution, no minting, no calf left un-tagged.</p></div>
+        <div class="mcard"><div class="em">🚜</div><h3>the herd decides</h3><p>whoever holds the most head steers the farm. this is, we note, exactly how it always worked.</p></div>
+      </div>
+      <div class="creed">own <span>head.</span><br>not shares.</div>
+    </div>
+  </section>
+
+  <section class="slab sun">
+    <div class="wrap" style="text-align:center">
+      <span class="kicker">04 · JOIN THE HERD</span>
+      <h2 class="h2big">get some head.</h2>
+      <div class="ca">
+        <div class="lab">CONTRACT ADDRESS · SOLANA</div>
+        <div class="addr" id="addr">— paste your CA here at launch —</div>
+        <button id="copy">🐄 COPY CA</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="slab wood">
+    <div class="wrap">
+      <p class="disc">DISCLOSURE: $LIVESTOCK is a very silly memetic instrument with no intrinsic value, no expectation of profit, and — despite our sincere claims — no actual cows. "proof-of-herd," "attestation," and "backing" are jokes wearing a suit. not financial advice, not a security, not affiliated with any farm. the word "genuinely" is used with love. do your own research and never buy the top. moo responsibly.</p>
+      <div class="footbig">LIVE<span>STOCK</span></div>
+      <div class="footsub">the original RWA · one token · one head · $LIVESTOCK</div>
+    </div>
+  </section>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+  // ---- centered sun rays ----
+  (function(){
+    const rays=document.getElementById('rays');
+    for(let i=0;i<12;i++){
+      const s=document.createElement('span');
+      s.style.transform=`translate(-50%,-50%) rotate(${i*30}deg) translateY(-64px)`;
+      rays.appendChild(s);
+    }
+  })();
+
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const gsapOK = typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined';
+
+  function countUp(){
+    const hc=document.getElementById('hc'); if(!hc) return;
+    const target=14027;
+    if(reduce||!gsapOK){ hc.textContent=target.toLocaleString(); return; }
+    let done=false;
+    const run=()=>{ if(done)return; done=true;
+      const t0=performance.now(),dur=1500;
+      const tick=t=>{const p=Math.min((t-t0)/dur,1);const e=1-Math.pow(1-p,3);
+        hc.textContent=Math.floor(e*target).toLocaleString(); if(p<1)requestAnimationFrame(tick);};
+      requestAnimationFrame(tick);
+    };
+    ScrollTrigger.create({trigger:'#hc',start:'top 80%',once:true,onEnter:run});
+  }
+
+  // ---- swirling leaves (only with gsap) ----
+  function makeLeaves(){
+    const box=document.getElementById('leaves'); if(!box) return;
+    const kinds=['🍂','🍃','🍁'];
+    const W=()=>window.innerWidth;
+    for(let i=0;i<12;i++){
+      const el=document.createElement('div');
+      el.className='leaf';
+      el.textContent=kinds[i%kinds.length];
+      el.style.top=(Math.random()*46)+'%';
+      el.style.fontSize=(14+Math.random()*18)+'px';
+      el.style.opacity=0.85;
+      box.appendChild(el);
+      const dur=13+Math.random()*12, delay=-Math.random()*dur;
+      gsap.fromTo(el,{x:-60},{x:W()+120,duration:dur,repeat:-1,ease:'none',delay});
+      gsap.to(el,{y:'+='+(50+Math.random()*70),duration:dur/5,repeat:-1,yoyo:true,ease:'sine.inOut',delay});
+      gsap.to(el,{rotation:'+=360',duration:2.5+Math.random()*3,repeat:-1,ease:'none'});
+    }
+  }
+
+  if(reduce || !gsapOK){
+    document.body.classList.add('static');
+    countUp();
+  } else {
+    gsap.registerPlugin(ScrollTrigger);
+
+    // sun rises & arcs
+    gsap.to('.sun-wrap',{top:'12%',left:'58%',ease:'none',
+      scrollTrigger:{trigger:'.act-sky',start:'top top',end:'bottom top',scrub:1}});
+    // day breaks
+    gsap.to('.sky-day',{opacity:1,ease:'none',
+      scrollTrigger:{trigger:'.act-sky',start:'top top',end:'bottom top',scrub:1}});
+    // gentle sky parallax for depth
+    gsap.to('.sky-extras',{yPercent:-18,ease:'none',
+      scrollTrigger:{trigger:'.act-sky',start:'top top',end:'bottom top',scrub:1}});
+    gsap.to('.clouds',{yPercent:-10,ease:'none',
+      scrollTrigger:{trigger:'.act-sky',start:'top top',end:'bottom top',scrub:1}});
+    // land slams up
+    gsap.fromTo('.land',{yPercent:118},{yPercent:0,ease:'power2.out',
+      scrollTrigger:{trigger:'.act-land',start:'top bottom',end:'top 20%',scrub:1}});
+    // animals pop in
+    ScrollTrigger.create({trigger:'.act-land',start:'top 40%',once:true,
+      onEnter:()=>gsap.fromTo('.critter',{scale:0},{scale:1,duration:.5,ease:'back.out(2.5)',stagger:.07})});
+
+    makeLeaves();
+    countUp();
+  }
+
+  const btn=document.getElementById('copy');
+  btn && btn.addEventListener('click',()=>{
+    const a=document.getElementById('addr').textContent.trim();
+    navigator.clipboard?.writeText(a).then(()=>{
+      const o=btn.textContent; btn.textContent='🐄 COPIED!'; setTimeout(()=>btn.textContent=o,1400);
+    }).catch(()=>{});
+  });
+</script>
+</body>
+</html>
