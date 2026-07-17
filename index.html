@@ -21,7 +21,7 @@
     --ink:#3A2410; --ink-soft:#6B5334;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
+  html{scroll-behavior:smooth;overflow-x:hidden;}
   body{font-family:"Fredoka",system-ui,sans-serif;color:var(--ink);background:var(--sky-day-top);overflow-x:hidden;}
 
   /* ================= FIXED FARM SCENE ================= */
@@ -161,7 +161,7 @@
 
   .toon{font-family:"Luckiest Guy",cursive;color:#fff;line-height:.92;
     text-shadow:5px 5px 0 var(--ink),-2px -2px 0 var(--ink),2px -2px 0 var(--ink),-2px 2px 0 var(--ink);}
-  .hero h1{font-size:clamp(64px,17vw,220px);}
+  .hero h1{font-size:clamp(44px,12.5vw,170px);white-space:nowrap;}
   .hero h1 .l{display:inline-block;color:var(--barn);}
   .hero h1 .l:nth-child(even){color:var(--sun);transform:rotate(4deg);}
   .hero h1 .l:nth-child(odd){transform:rotate(-3deg);}
@@ -222,9 +222,72 @@
   .ca button:focus-visible{outline:3px solid var(--ink);outline-offset:3px;}
 
   .disc{font-family:"JetBrains Mono",monospace;font-size:12px;line-height:1.9;max-width:74ch;margin:0 auto;text-align:center;font-weight:700;}
-  .footbig{font-family:"Luckiest Guy",cursive;font-size:clamp(48px,15vw,150px);text-align:center;margin-top:40px;line-height:.85;color:var(--cream);text-shadow:5px 5px 0 var(--roof);}
+  .footbig{font-family:"Luckiest Guy",cursive;font-size:clamp(40px,12vw,150px);text-align:center;margin-top:40px;line-height:.85;color:var(--cream);text-shadow:5px 5px 0 var(--roof);white-space:nowrap;}
   .footbig span{color:var(--sun);}
   .footsub{text-align:center;font-family:"Bungee",cursive;font-size:14px;margin-top:14px;}
+
+  /* ================= SCROLL-DRAWN DOODLE HEADS ================= */
+  .wrap{position:relative;}
+  .doodle{position:absolute;top:-16px;right:0;width:min(240px,24vw);transform:rotate(4deg);cursor:pointer;z-index:1;}
+  @media(max-width:760px){.doodle{position:static;width:180px;margin:0 auto 18px;}}
+  .doodle svg{display:block;width:100%;height:auto;overflow:visible;}
+  .doodle .lines{fill:none;stroke:var(--ink);stroke-width:7;stroke-linecap:round;stroke-linejoin:round;}
+  .slab.red .doodle .lines{stroke:var(--cream);}
+  .doodle .fillg{opacity:0;}
+
+  /* ================= TICKER MARQUEE ================= */
+  .ticker{position:relative;z-index:3;background:var(--ink);color:var(--cream);overflow:hidden;padding:13px 0;transform:rotate(-1.2deg) scaleX(1.04);margin:-10px 0;box-shadow:0 6px 0 rgba(0,0,0,.15);}
+  .ticker.alt{transform:rotate(1.2deg) scaleX(1.04);}
+  .ticker-track{display:inline-flex;white-space:nowrap;width:max-content;font-family:"Bungee",cursive;font-size:15px;animation:tick 26s linear infinite;}
+  .ticker-track span{display:inline-block;padding-right:48px;}
+  @keyframes tick{to{transform:translateX(-50%);}}
+
+  /* ================= INTERACTIVITY ================= */
+  .act{pointer-events:none;}
+  .act .tag,.act .scrollcue{pointer-events:auto;}
+  .hero h1 .l{cursor:pointer;pointer-events:auto;transition:transform .18s;}
+  .hero h1 .l:hover{transform:translateY(-16px) rotate(8deg) scale(1.12);}
+  .critter,.duck{pointer-events:auto;cursor:pointer;}
+  .sun-wrap{cursor:pointer;}
+  .sun-shades{position:absolute;inset:20px;display:none;align-items:center;justify-content:center;font-size:46px;transform:translateY(-10px);}
+  .sun-wrap.cool .sun-shades{display:flex;}
+  .sun-wrap.cool .sun-eyes{visibility:hidden;}
+  .pop-part{position:fixed;left:0;top:0;z-index:99;pointer-events:none;font-size:22px;transform:translate(-50%,-50%);}
+  .shout{position:fixed;z-index:99;pointer-events:none;transform:translate(-50%,-100%);background:#fff;border:3px solid var(--ink);border-radius:16px;padding:5px 12px;font-family:"Bungee",cursive;font-size:14px;color:var(--ink);box-shadow:4px 4px 0 var(--ink);white-space:nowrap;}
+  .fly-pet{position:fixed;left:0;top:0;z-index:9;pointer-events:none;font-size:20px;filter:drop-shadow(0 2px 0 rgba(0,0,0,.15));}
+  .mcard,.ca{will-change:transform;}
+
+  .sky-spacer{height:60vh;}
+
+  /* ================= MOBILE TUNING ================= */
+  @media(max-width:640px){
+    .wrap{padding:0 18px;}
+    .act-sky{min-height:165vh;padding-top:11vh;}
+    .act-land{min-height:110vh;}
+    .sky-spacer{height:32vh;}
+    .hero .tag{margin-top:18px;padding:8px 14px;}
+    .hero .sub{margin-top:16px;}
+    .scrollcue{margin-top:26px;}
+    .slab{padding:52px 0;border-top-width:6px;}
+    .doodle{width:150px;margin:0 auto 14px;}
+    .hay-grid{gap:14px;margin-top:26px;}
+    .hay{padding:18px;box-shadow:6px 6px 0 var(--ink);}
+    .lexfoot{margin-top:28px;}
+    .herd-wrap{gap:22px;margin-top:24px;}
+    .ledger{font-size:11px;}
+    .lrow{padding:9px 12px;gap:8px;}
+    .ledger .lh{padding:10px 12px;}
+    .mech{gap:14px;margin-top:26px;}
+    .mcard{padding:20px;box-shadow:6px 6px 0 var(--grass-dk);}
+    .mcard .em{font-size:40px;}
+    .creed{margin-top:36px;}
+    .ca{padding:18px;margin-top:26px;box-shadow:7px 7px 0 var(--roof);}
+    .ca .addr{font-size:13px;}
+    .ticker{padding:9px 0;}
+    .ticker-track{font-size:13px;}
+    .disc{font-size:11px;}
+    .footbig{margin-top:26px;}
+  }
 
   body.static .land{transform:none;}
   body.static .sun-wrap{top:12%;left:56%;}
@@ -244,6 +307,7 @@
     <div class="sun-rays" id="rays"></div>
     <div class="sun-core"></div>
     <div class="sun-face"><div class="sun-eyes"><i></i><i></i></div><div class="sun-smile"></div></div>
+    <div class="sun-shades">🕶️</div>
   </div>
 
   <!-- clouds -->
@@ -375,7 +439,7 @@
       <div class="tag">🐄 GENUINELY TOKENIZED 🐖</div>
       <p class="sub">the world's first real world asset with a heartbeat and a tail.</p>
       <div class="scrollcue">▼ SCROLL TO RAISE THE SUN ▼</div>
-      <div style="height:60vh"></div>
+      <div class="sky-spacer"></div>
       <div class="midline">crank it up… ☀️</div>
     </div>
   </section>
@@ -387,8 +451,36 @@
     </div>
   </section>
 
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      <span>🐄 MOO</span><span>$LIVESTOCK</span><span>1 TOKEN = 1 HEAD</span><span>🐖 OINK</span><span>PROOF OF HERD™</span><span>🐑 BAAA</span><span>THE ORIGINAL RWA</span><span>🚜 VROOM</span>
+      <span>🐄 MOO</span><span>$LIVESTOCK</span><span>1 TOKEN = 1 HEAD</span><span>🐖 OINK</span><span>PROOF OF HERD™</span><span>🐑 BAAA</span><span>THE ORIGINAL RWA</span><span>🚜 VROOM</span>
+    </div>
+  </div>
+
   <section class="slab cream">
     <div class="wrap">
+      <div class="doodle" data-shout="MOO!">
+        <svg viewBox="0 0 220 200" aria-hidden="true">
+          <g class="fillg">
+            <ellipse cx="110" cy="128" rx="44" ry="26" fill="#F2A9B0"/>
+            <path d="M72,54 Q60,68 76,76 Q92,74 88,58 Q82,46 72,54 Z" fill="#3A2410" opacity=".85"/>
+            <circle cx="88" cy="85" r="6" fill="#3A2410"/>
+            <circle cx="132" cy="85" r="6" fill="#3A2410"/>
+            <ellipse cx="96" cy="128" rx="5" ry="8" fill="#3A2410"/>
+            <ellipse cx="124" cy="128" rx="5" ry="8" fill="#3A2410"/>
+          </g>
+          <g class="lines">
+            <path d="M62,48 Q58,22 82,28 Q108,10 138,28 Q162,22 158,48 Q174,72 166,108 Q158,152 110,156 Q62,152 54,108 Q46,72 62,48 Z"/>
+            <path d="M56,58 Q22,42 16,64 Q20,84 52,74"/>
+            <path d="M164,58 Q198,42 204,64 Q200,84 168,74"/>
+            <path d="M78,28 Q70,8 90,14"/>
+            <path d="M142,28 Q150,8 130,14"/>
+            <path d="M66,128 Q66,104 110,104 Q154,104 154,128 Q154,150 110,152 Q66,150 66,128 Z"/>
+            <path d="M100,142 Q110,148 120,142"/>
+          </g>
+        </svg>
+      </div>
       <span class="kicker">01 · PROVENANCE</span>
       <h2 class="h2big">the words are<br>literally cows.</h2>
       <div class="hay-grid">
@@ -403,6 +495,27 @@
 
   <section class="slab red">
     <div class="wrap">
+      <div class="doodle" data-shout="OINK!">
+        <svg viewBox="0 0 220 200" aria-hidden="true">
+          <g class="fillg">
+            <circle cx="110" cy="104" r="68" fill="#F5A9BC"/>
+            <path d="M64,54 Q48,16 82,24 Q94,32 90,48 Z" fill="#E886A2"/>
+            <path d="M156,54 Q172,16 138,24 Q126,32 130,48 Z" fill="#E886A2"/>
+            <ellipse cx="110" cy="116" rx="34" ry="24" fill="#E886A2"/>
+            <ellipse cx="98" cy="116" rx="5" ry="9" fill="#3A2410"/>
+            <ellipse cx="122" cy="116" rx="5" ry="9" fill="#3A2410"/>
+            <circle cx="82" cy="82" r="6" fill="#3A2410"/>
+            <circle cx="138" cy="82" r="6" fill="#3A2410"/>
+          </g>
+          <g class="lines">
+            <circle cx="110" cy="104" r="68"/>
+            <path d="M64,54 Q48,16 82,24 Q94,32 90,48"/>
+            <path d="M156,54 Q172,16 138,24 Q126,32 130,48"/>
+            <ellipse cx="110" cy="116" rx="34" ry="24"/>
+            <path d="M86,152 Q110,164 134,152"/>
+          </g>
+        </svg>
+      </div>
       <span class="kicker">02 · PROOF OF HERD™</span>
       <h2 class="h2big" style="color:var(--cream)">1 token =<br>1 real cow*</h2>
       <div class="herd-wrap">
@@ -425,6 +538,24 @@
 
   <section class="slab green">
     <div class="wrap">
+      <div class="doodle" data-shout="BAAA!">
+        <svg viewBox="0 0 220 200" aria-hidden="true">
+          <g class="fillg">
+            <path d="M45,80 Q30,60 50,50 Q45,28 68,30 Q72,8 94,16 Q108,0 124,14 Q142,4 150,22 Q172,20 172,42 Q192,50 180,68 Q196,86 178,98 Q184,120 162,118 Q156,138 136,132 Q120,146 104,134 Q84,142 76,124 Q54,128 56,108 Q36,102 45,80 Z" fill="#FFFDF5"/>
+            <ellipse cx="110" cy="120" rx="36" ry="42" fill="#8A6B4F"/>
+            <path d="M92,86 Q110,76 128,86 Q120,96 110,94 Q100,96 92,86 Z" fill="#FFFDF5"/>
+            <circle cx="96" cy="110" r="5.5" fill="#3A2410"/>
+            <circle cx="124" cy="110" r="5.5" fill="#3A2410"/>
+          </g>
+          <g class="lines">
+            <path d="M45,80 Q30,60 50,50 Q45,28 68,30 Q72,8 94,16 Q108,0 124,14 Q142,4 150,22 Q172,20 172,42 Q192,50 180,68 Q196,86 178,98 Q184,120 162,118 Q156,138 136,132 Q120,146 104,134 Q84,142 76,124 Q54,128 56,108 Q36,102 45,80 Z"/>
+            <ellipse cx="110" cy="120" rx="36" ry="42"/>
+            <path d="M74,110 Q52,102 50,120 Q54,134 74,126"/>
+            <path d="M146,110 Q168,102 170,120 Q166,134 146,126"/>
+            <path d="M102,142 Q110,148 118,142"/>
+          </g>
+        </svg>
+      </div>
       <span class="kicker">03 · MECHANICS</span>
       <h2 class="h2big">the herd<br>feeds the herd.</h2>
       <div class="mech">
@@ -436,8 +567,33 @@
     </div>
   </section>
 
+  <div class="ticker alt" aria-hidden="true">
+    <div class="ticker-track">
+      <span>🐔 CLUCK</span><span>GET SOME HEAD</span><span>🐄 MOO</span><span>NO CALF LEFT UN-TAGGED</span><span>🐐 MEH</span><span>MOO RESPONSIBLY</span><span>🐴 NEIGH</span><span>$LIVESTOCK</span>
+      <span>🐔 CLUCK</span><span>GET SOME HEAD</span><span>🐄 MOO</span><span>NO CALF LEFT UN-TAGGED</span><span>🐐 MEH</span><span>MOO RESPONSIBLY</span><span>🐴 NEIGH</span><span>$LIVESTOCK</span>
+    </div>
+  </div>
+
   <section class="slab sun">
     <div class="wrap" style="text-align:center">
+      <div class="doodle" data-shout="CLUCK!">
+        <svg viewBox="0 0 220 200" aria-hidden="true">
+          <g class="fillg">
+            <path d="M74,180 Q62,120 68,84 Q74,46 110,42 Q146,46 152,82 Q158,118 146,180 Z" fill="#FFFDF5"/>
+            <path d="M88,50 Q80,26 98,32 Q100,12 114,26 Q122,8 132,28 Q146,20 138,48 Z" fill="#C63A2B"/>
+            <path d="M150,94 L184,106 L152,118 Z" fill="#F59E0B"/>
+            <path d="M148,122 Q162,140 146,146 Q134,140 141,124 Z" fill="#C63A2B"/>
+            <circle cx="118" cy="88" r="4.5" fill="#3A2410"/>
+          </g>
+          <g class="lines">
+            <path d="M74,180 Q62,120 68,84 Q74,46 110,42 Q146,46 152,82 Q158,118 146,180"/>
+            <path d="M88,50 Q80,26 98,32 Q100,12 114,26 Q122,8 132,28 Q146,20 138,46"/>
+            <path d="M150,94 L184,106 L152,118"/>
+            <path d="M148,122 Q162,140 146,146 Q134,140 141,124"/>
+            <circle cx="118" cy="88" r="8"/>
+          </g>
+        </svg>
+      </div>
       <span class="kicker">04 · JOIN THE HERD</span>
       <h2 class="h2big">get some head.</h2>
       <div class="ca">
@@ -483,8 +639,129 @@
       const tick=t=>{const p=Math.min((t-t0)/dur,1);const e=1-Math.pow(1-p,3);
         hc.textContent=Math.floor(e*target).toLocaleString(); if(p<1)requestAnimationFrame(tick);};
       requestAnimationFrame(tick);
+      cowRain();
     };
     ScrollTrigger.create({trigger:'#hc',start:'top 80%',once:true,onEnter:run});
+  }
+
+  // ---- emoji particle burst ----
+  function burst(x,y,set,n=12){
+    if(reduce||!gsapOK) return;
+    for(let i=0;i<n;i++){
+      const s=document.createElement('span');
+      s.className='pop-part';
+      s.textContent=set[Math.floor(Math.random()*set.length)];
+      s.style.left=x+'px'; s.style.top=y+'px';
+      document.body.appendChild(s);
+      const a=Math.random()*Math.PI*2, v=60+Math.random()*130;
+      gsap.to(s,{x:Math.cos(a)*v,y:Math.sin(a)*v-70,rotation:Math.random()*540-270,opacity:0,
+        duration:.9+Math.random()*.5,ease:'power2.out',onComplete:()=>s.remove()});
+    }
+  }
+
+  // ---- speech shout ----
+  function shout(x,y,txt){
+    const b=document.createElement('div');
+    b.className='shout'; b.textContent=txt;
+    b.style.left=x+'px'; b.style.top=(y-34)+'px';
+    document.body.appendChild(b);
+    if(reduce||!gsapOK){ setTimeout(()=>b.remove(),900); return; }
+    gsap.fromTo(b,{scale:0,rotation:-8},{scale:1,rotation:3,duration:.3,ease:'back.out(3)'});
+    gsap.to(b,{opacity:0,y:-34,delay:.8,duration:.4,onComplete:()=>b.remove()});
+  }
+
+  // ---- cow rain when the herd counter triggers ----
+  function cowRain(){
+    if(reduce||!gsapOK) return;
+    for(let i=0;i<12;i++){
+      setTimeout(()=>{
+        const s=document.createElement('span');
+        s.className='pop-part'; s.textContent=Math.random()<.8?'🐄':'💸';
+        s.style.left=(Math.random()*100)+'vw'; s.style.top='-50px';
+        document.body.appendChild(s);
+        gsap.to(s,{y:window.innerHeight+120,rotation:Math.random()*720-360,
+          duration:2+Math.random()*1.2,ease:'power1.in',onComplete:()=>s.remove()});
+      },i*130);
+    }
+  }
+
+  // ---- doodle heads: draw themselves as the section scrolls in ----
+  function setupDoodles(){
+    document.querySelectorAll('.doodle').forEach(d=>{
+      const shapes=d.querySelectorAll('.lines path,.lines circle,.lines ellipse');
+      const fill=d.querySelector('.fillg');
+      const sec=d.closest('section');
+      if(reduce||!gsapOK){ if(fill)fill.style.opacity=1; return; }
+      shapes.forEach(sh=>{
+        const len=sh.getTotalLength();
+        sh.style.strokeDasharray=len;
+        sh.style.strokeDashoffset=len;
+      });
+      gsap.to(shapes,{strokeDashoffset:0,ease:'none',stagger:.15,
+        scrollTrigger:{trigger:sec,start:'top 80%',end:'top 25%',scrub:.5}});
+      gsap.to(fill,{opacity:1,ease:'none',
+        scrollTrigger:{trigger:sec,start:'top 35%',end:'top 12%',scrub:.5}});
+      d.addEventListener('click',e=>{
+        if(gsapOK&&!reduce)gsap.fromTo(d,{rotation:-4,scale:.88},{rotation:4,scale:1,duration:.7,ease:'elastic.out(1,.4)'});
+        burst(e.clientX,e.clientY,['✏️','✨','💛'],10);
+        shout(e.clientX,e.clientY,d.dataset.shout||'HI!');
+      });
+    });
+  }
+
+  // ---- clickable farm animals ----
+  const SOUNDS={'🐄':'MOO!','🐖':'OINK!','🐑':'BAAA!','🐔':'CLUCK!','🐓':'COCK-A-DOODLE-DOO!','🐐':'MEH-EH-EH!','🐴':'NEIGH!','🐕':'WOOF!','🦆':'QUACK!'};
+  document.querySelectorAll('.critter,.duck').forEach(c=>{
+    c.addEventListener('click',e=>{
+      const em=c.textContent.trim();
+      if(gsapOK&&!reduce)gsap.fromTo(c,{y:0},{y:-34,yoyo:true,repeat:1,duration:.18,ease:'power2.out'});
+      burst(e.clientX,e.clientY,['💛','✨',em],9);
+      shout(e.clientX,e.clientY,SOUNDS[em]||'HI!');
+    });
+  });
+
+  // ---- hero letters: click to launch ----
+  document.querySelectorAll('.hero h1 .l').forEach(l=>{
+    l.addEventListener('click',e=>{
+      burst(e.clientX,e.clientY,['🐄','⭐','💥'],10);
+      if(gsapOK&&!reduce)gsap.fromTo(l,{y:0},{y:-60,rotation:360,duration:.65,ease:'back.out(1.6)',
+        onComplete:()=>gsap.to(l,{y:0,rotation:0,duration:.35,clearProps:'transform'})});
+    });
+  });
+
+  // ---- sun wears shades ----
+  const sunw=document.querySelector('.sun-wrap');
+  sunw&&sunw.addEventListener('click',e=>{
+    sunw.classList.toggle('cool');
+    burst(e.clientX,e.clientY,['😎','☀️','✨'],8);
+  });
+
+  // ---- click the empty scene: flowers ----
+  const scene=document.querySelector('.scene');
+  scene&&scene.addEventListener('click',e=>{
+    if(e.target.closest('.critter,.sun-wrap,.duck'))return;
+    burst(e.clientX,e.clientY,['🌼','🌸','🌻','✨'],8);
+  });
+
+  // ---- 3D tilt cards ----
+  if(gsapOK&&!reduce){
+    document.querySelectorAll('.mcard,.ca').forEach(card=>{
+      card.addEventListener('mousemove',e=>{
+        const r=card.getBoundingClientRect();
+        gsap.to(card,{rotationX:((e.clientY-r.top)/r.height-.5)*-10,rotationY:((e.clientX-r.left)/r.width-.5)*10,transformPerspective:700,duration:.3});
+      });
+      card.addEventListener('mouseleave',()=>gsap.to(card,{rotationX:0,rotationY:0,duration:.5,ease:'power2.out'}));
+    });
+  }
+
+  // ---- pet bee follows the cursor ----
+  if(gsapOK&&!reduce&&matchMedia('(pointer:fine)').matches){
+    const bee=document.createElement('div');
+    bee.className='fly-pet'; bee.textContent='🐝';
+    document.body.appendChild(bee);
+    const qx=gsap.quickTo(bee,'x',{duration:.7,ease:'power3.out'});
+    const qy=gsap.quickTo(bee,'y',{duration:.7,ease:'power3.out'});
+    addEventListener('mousemove',e=>{qx(e.clientX+20);qy(e.clientY+22);});
   }
 
   // ---- swirling leaves (only with gsap) ----
@@ -510,8 +787,20 @@
   if(reduce || !gsapOK){
     document.body.classList.add('static');
     countUp();
+    setupDoodles();
   } else {
     gsap.registerPlugin(ScrollTrigger);
+    setupDoodles();
+
+    // section headings + cards pop in
+    gsap.utils.toArray('.h2big,.kicker,.creed,.lexfoot').forEach(el=>{
+      gsap.from(el,{y:40,opacity:0,rotation:-3,duration:.6,ease:'back.out(2)',
+        scrollTrigger:{trigger:el,start:'top 88%',once:true}});
+    });
+    ['.hay-grid .hay','.mech .mcard'].forEach(sel=>{
+      gsap.from(sel,{scale:.6,opacity:0,rotation:6,stagger:.08,duration:.5,ease:'back.out(2)',
+        scrollTrigger:{trigger:sel,start:'top 88%',once:true}});
+    });
 
     // sun rises & arcs
     gsap.to('.sun-wrap',{top:'12%',left:'58%',ease:'none',
@@ -525,7 +814,7 @@
     gsap.to('.clouds',{yPercent:-10,ease:'none',
       scrollTrigger:{trigger:'.act-sky',start:'top top',end:'bottom top',scrub:1}});
     // land slams up
-    gsap.fromTo('.land',{yPercent:118},{yPercent:0,ease:'power2.out',
+    gsap.fromTo('.land',{y:0,yPercent:118},{y:0,yPercent:0,ease:'power2.out',
       scrollTrigger:{trigger:'.act-land',start:'top bottom',end:'top 20%',scrub:1}});
     // animals pop in
     ScrollTrigger.create({trigger:'.act-land',start:'top 40%',once:true,
@@ -536,8 +825,9 @@
   }
 
   const btn=document.getElementById('copy');
-  btn && btn.addEventListener('click',()=>{
+  btn && btn.addEventListener('click',e=>{
     const a=document.getElementById('addr').textContent.trim();
+    burst(e.clientX,e.clientY,['💸','🐄','🎉','⭐'],18);
     navigator.clipboard?.writeText(a).then(()=>{
       const o=btn.textContent; btn.textContent='🐄 COPIED!'; setTimeout(()=>btn.textContent=o,1400);
     }).catch(()=>{});
