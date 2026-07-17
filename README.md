@@ -46,4 +46,4 @@ livestock/
 
 - Falls back gracefully with reduced-motion enabled or if the GSAP CDN fails to load
   (renders the fully-assembled daytime farm).
-- Drop your Solana contract address into the `#addr` element in `index.html` before launch.
+- Drop your Solana contract address into `CONTRACT_ADDRESS` at the top of the `<script>` in `index.html` before launch.

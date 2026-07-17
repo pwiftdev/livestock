@@ -230,6 +230,7 @@
   .ca{max-width:760px;margin:44px auto 0;background:var(--cream);border:5px solid var(--ink);border-radius:20px;padding:26px;box-shadow:10px 10px 0 var(--roof);}
   .ca .lab{font-family:"Bungee",cursive;font-size:13px;color:var(--barn);margin-bottom:10px;}
   .ca .addr{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:15px;word-break:break-all;color:var(--ink);}
+  .ca .addr.pending{color:var(--ink-soft);font-style:italic;font-weight:600;}
   .ca button{margin-top:18px;font-family:"Bungee",cursive;font-size:15px;background:var(--barn);color:#fff;border:4px solid var(--ink);border-radius:12px;padding:14px 26px;cursor:pointer;box-shadow:5px 5px 0 var(--ink);transition:transform .12s;}
   .ca button:hover{transform:translate(2px,2px);box-shadow:3px 3px 0 var(--ink);}
   .ca button:focus-visible{outline:3px solid var(--ink);outline-offset:3px;}
@@ -640,7 +641,7 @@
       <img class="brand-logo ca-logo" src="livestocklogo.jpeg" alt="" width="64" height="64" aria-hidden="true">
       <div class="ca">
         <div class="lab">CONTRACT ADDRESS · SOLANA</div>
-        <div class="addr" id="addr">— paste your CA here at launch —</div>
+        <div class="addr pending" id="addr">— launching soon —</div>
         <button id="copy">🐄 COPY CA</button>
       </div>
     </div>
@@ -675,6 +676,23 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script>
+  // ---- contract address: paste Solana CA here at launch ----
+  const CONTRACT_ADDRESS = 'GQKrwiiX8PPFAsRz5ryYkKQznuHykF9wQ5pYipgMpump';
+
+  (function initCA(){
+    const el=document.getElementById('addr');
+    if(!el) return;
+    const ca=CONTRACT_ADDRESS.trim();
+    if(!ca){
+      el.textContent='— launching soon —';
+      el.classList.add('pending');
+      return;
+    }
+    el.textContent=ca;
+    el.classList.remove('pending');
+    document.body.dataset.caLive='1';
+  })();
+
   // ---- centered sun rays ----
   (function(){
     const rays=document.getElementById('rays');
@@ -887,7 +905,11 @@
   const btnSticky=document.getElementById('copySticky');
   function copyCA(btn,e){
     if(!btn) return;
-    const a=document.getElementById('addr').textContent.trim();
+    const a=CONTRACT_ADDRESS.trim();
+    if(!a){
+      const o=btn.textContent; btn.textContent='🐄 SOON!'; setTimeout(()=>btn.textContent=o,1400);
+      return;
+    }
     if(e) burst(e.clientX,e.clientY,['💸','🐄','🎉','⭐'],18);
     navigator.clipboard?.writeText(a).then(()=>{
       const o=btn.textContent; btn.textContent='🐄 COPIED!'; setTimeout(()=>btn.textContent=o,1400);
